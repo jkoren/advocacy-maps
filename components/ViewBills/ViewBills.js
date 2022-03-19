@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { useRouter } from "next/router"
-import { Table, Container, Button, Spinner, Row } from "react-bootstrap"
+import { Table, Container, Button, Spinner, Row, Form } from "react-bootstrap"
 import { useBills } from "../db"
 import * as links from "../../components/links.tsx"
 import { useMember } from "../db"
@@ -8,6 +8,26 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons"
 import Testimonies from "../Testimonies/Testimonies"
 
+const SearchBar = ({ billsToShow, setBillsToShow, setBillId }) => (
+  <Form className="col-lg-5 mx-auto">
+    <Form.Group>
+      <Row>
+        <Form.Control
+          type="text"
+          placeholder="Search by bill # "
+          onChange={e => {
+            setBillsToShow(e.target.value)
+            // setBillId({ billId: "H1000" })
+            // react_devtools_backend.js:3973 Error in useBills FirebaseError: Order by clause cannot contain a field with an equality filter id
+          }}
+        />
+      </Row>
+      <Row className="mt-2">
+        <Button variant="primary">Search</Button>
+      </Row>
+    </Form.Group>
+  </Form>
+)
 const invalidSponsorId = Id => {
   // we will have to learn more about why certain sponsors have invalid ID's
   return ["GOV7"].includes(Id)
@@ -93,6 +113,8 @@ const BillRows = ({ bills }) => {
 }
 
 const ViewBills = () => {
+  const [billsToShow, setBillsToShow] = useState("")
+
   const {
     bills,
     setSort,
@@ -101,16 +123,23 @@ const ViewBills = () => {
     previousPage,
     currentPage,
     hasNextPage,
-    hasPreviousPage
+    hasPreviousPage,
+    setBillId
   } = useBills()
-  const [filterBy, setFilterBy] = useState(null)
-  const filterByMessage =
-    filterBy == "leadSponsor"
-      ? "Choose Lead Sponsor.."
-      : "Choose Lead Sponsor District.."
+
+  // const [filterBy, setFilterBy] = useState(null)
+  // const filterByMessage =
+  //   filterBy == "leadSponsor"
+  //     ? "Choose Lead Sponsor.."
+  //     : "Choose Lead Sponsor District.."
 
   return (
     <Container>
+      <SearchBar
+        billsToShow={billsToShow}
+        setBillsToShow={setBillsToShow}
+        setBillId={setBillId}
+      />
       <div className="row mt-2">
         <div className="col-md-2">
           <select
@@ -128,7 +157,7 @@ const ViewBills = () => {
             <option value="latestTestimony">Most recent testimony</option>
           </select>
         </div>
-        <div className="col-md-2">
+        {/* <div className="col-md-2">
           <select
             className="form-control"
             onChange={e => {
@@ -157,7 +186,7 @@ const ViewBills = () => {
               <option value="jim">Jim Doe</option>
             </select>
           </div>
-        )}
+        )} */}
       </div>
       {/* something about the table is causing a problem on mobile */}
       <Table className="mt-2" striped bordered hover>

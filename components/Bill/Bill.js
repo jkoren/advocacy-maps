@@ -33,7 +33,11 @@ const ViewBillPage = props => {
             ? bill.BillNumber + "  General Court: " + bill.GeneralCourtNumber
             : ""}
         </h4>
-        <h4>{committeeName ? "Current Committee: " + committeeName : ""}</h4>
+        <h4>
+          {committeeName
+            ? "Current Committee: " + committeeName
+            : "No Current Committee"}
+        </h4>
         <h4>{bill ? bill.Title : ""}</h4>
         <h5>{bill ? bill.Pinslip : ""}</h5>
       </div>
