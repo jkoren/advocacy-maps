@@ -1,7 +1,16 @@
 import { FieldValue } from "@google-cloud/firestore"
 import axios from "axios"
 import { https, logger } from "firebase-functions"
-import { Null, Record, Result, Runtype, Static, String } from "runtypes"
+import {
+  Null,
+  Nullish,
+  Optional,
+  Record,
+  Result,
+  Runtype,
+  Static,
+  String
+} from "runtypes"
 
 /** Parse the request and return the result or fail. */
 export function checkRequest<A>(type: Runtype<A>, data: any) {
@@ -33,9 +42,9 @@ export function fail(code: https.FunctionsErrorCode, message: string) {
 }
 
 /** Catch handler to log axios errors and return undefined. */
-export const logFetchError = (label: string, id: string) => (e: any) => {
+export const logFetchError = (label: string, id?: string) => (e: any) => {
   if (axios.isAxiosError(e)) {
-    logger.info(`Error fetching ${label} - ${id}: ${e.message}`)
+    logger.info(`Error fetching ${label}${id ? ` - ${id}` : ""}: ${e.message}`)
     return undefined
   } else {
     throw e
@@ -48,6 +57,8 @@ const simpleId = /^[A-Za-z0-9-_]+$/
 export const Id = String.withConstraint(s => simpleId.test(s))
 
 export const NullStr = String.Or(Null)
+export const Nullable = <T>(t: Runtype<T>) => Null.Or(t)
+export const Maybe = <T>(t: Runtype<T>) => Optional(t.Or(Nullish))
 
 /** Allows specifying defaults that are merged into records before validation.
  * This is useful for compatibility with documents created before adding a field

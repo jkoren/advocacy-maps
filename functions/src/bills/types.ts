@@ -1,14 +1,14 @@
 import {
+  Array,
   InstanceOf,
   Number,
   Optional,
   Record,
   Static,
-  Unknown,
   String,
-  Array
+  Unknown
 } from "runtypes"
-import { Id, NullStr, withDefaults } from "../common"
+import { Id, Maybe, NullStr, withDefaults } from "../common"
 import { Timestamp } from "../firebase"
 
 export type BillReference = Static<typeof BillReference>
@@ -28,6 +28,19 @@ export const BillHistoryAction = Record({
 export type BillHistory = Static<typeof BillHistory>
 export const BillHistory = Array(BillHistoryAction)
 
+export type CurrentCommittee = Static<typeof CurrentCommittee>
+export const CommitteeMember = Record({
+    id: String,
+    name: String,
+    email: NullStr
+  }),
+  CurrentCommittee = Record({
+    id: String,
+    name: String,
+    houseChair: Maybe(CommitteeMember),
+    senateChair: Maybe(CommitteeMember)
+  })
+
 export type Bill = Static<typeof Bill>
 export const Bill = withDefaults(
   Record({
@@ -41,7 +54,7 @@ export const Bill = withDefaults(
     fetchedAt: InstanceOf(Timestamp),
     history: BillHistory,
     similar: Array(Id),
-    currentCommittee: Optional(Record({ id: String, name: String })),
+    currentCommittee: Optional(CurrentCommittee),
     city: Optional(String)
   }),
   {
