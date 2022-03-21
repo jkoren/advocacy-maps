@@ -9,8 +9,6 @@ export default createPage({
     return (
       <>
         <h1>Bills</h1>
-
-        {/* <SearchBar /> */}
         <ViewBills />
       </>
     )
