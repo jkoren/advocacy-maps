@@ -6,6 +6,8 @@ import { useBills, useMember } from "../db"
 import { formatBillId, formatTimestamp } from "../formatting"
 import { BillSearch } from "../search"
 import { PaginationButtons } from "../table"
+import BootstrapTable from "react-bootstrap-table-next"
+import { ItemSearch } from "../search/search"
 
 const invalidSponsorId = Id => {
   // we will have to learn more about why certain sponsors have invalid ID's
@@ -84,9 +86,76 @@ const BillRows = ({ bills }) => {
   })
 }
 
+const columns = [
+  {
+    dataField: "id",
+    text: "Bill #",
+    sort: true
+  },
+  {
+    dataField: "bill.Title",
+    text: "Bill Title",
+    sort: true
+  },
+  {
+    dataField: "price",
+    text: "Lead Sponsor"
+  },
+  {
+    dataField: "price1",
+    text: "City"
+  },
+  {
+    dataField: "cosponsorCount",
+    text: "# CoSponsors",
+    sort: true
+  },
+  {
+    dataField: "price2",
+    text: "Hearing Scheduled"
+  },
+  {
+    dataField: "price3",
+    text: "Published Testimony (#)"
+  },
+  {
+    dataField: "price4",
+    text: "Most Recent Testimony"
+  },
+  {
+    dataField: "price5",
+    text: "Current Committee"
+  }
+]
+
 const ViewBills = () => {
   const { items, setSort, setFilter, pagination } = useBills()
+  const bills = items?.result ? items?.result : []
+  // const bills2 = items?.result
+  //   ? items.result.map(bill => {
+  //       return [
+  //         formatBillId(bill.BillNumber),
+  //         bill.Title
+  //         // SponsorComponent,
+  //         // fullBill.city
+  //       ]
+  //     })
+  //   : []
 
+  // console.log(bills2)
+
+  // <td>{bill.Title}</td>
+  // <td>{SponsorComponent}</td>
+  // <td>{fullBill.city}</td>
+  // <td>{numCoSponsors}</td>
+  // <td>{formatTimestamp(fullBill.nextHearingAt)}</td>
+  // <td>{fullBill.testimonyCount}</td>
+  // <td>{formatTimestamp(fullBill.latestTestimonyAt)}</td>
+  // <td>{committeeCell}</td>
+
+  // testimonies.map((testimony, index) => {
+  //   return <TestimonyRow testimony={testimony} key={index} />
+  // })
   return (
     <Container>
       <BillSearch setSort={setSort} setFilter={setFilter} />
@@ -110,6 +179,15 @@ const ViewBills = () => {
         {items.loading && <Spinner animation="border" className="mx-auto" />}
       </Row>
       <PaginationButtons pagination={pagination} />
+      <BootstrapTable
+        keyField="id"
+        data={bills}
+        columns={columns}
+        responsive
+        striped
+        bordered
+        hover
+      />
     </Container>
   )
 }
